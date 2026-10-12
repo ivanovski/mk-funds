@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Macedonian investment funds – TOP-10 holdings</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#1d2433;--muted:#6b7385;--line:#e3e7ef;--acc:#2563eb;--acc2:#e8efff;--pos:#0f8a4b;--neg:#c62828}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+header{padding:14px 22px 6px}
+h1{font-size:19px;margin:0 0 2px;font-weight:650}
+h2{font-size:16px;margin:0 0 6px}
+h3{font-size:14px;margin:12px 0 6px}
+.sub{color:var(--muted);font-size:12.5px}
+main{padding:8px 22px 22px;max-width:1300px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 1px 2px rgba(20,30,60,.04);padding:12px 14px;margin-bottom:14px}
+.warn{background:#fff8e6;border:1px solid #f0d78c;border-radius:10px;padding:8px 12px;font-size:12.8px;margin:0 22px 8px;max-width:1256px}
+.nav{font-size:12.5px;margin-bottom:8px;display:flex;flex-wrap:wrap;gap:6px}
+.nav a{padding:3px 10px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--acc);background:#fff}
+.nav a.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+a{color:var(--acc)}
+.srch{position:relative;max-width:560px}
+#q{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px}
+#sugg{position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid var(--line);border-radius:8px;z-index:10;max-height:360px;overflow:auto;box-shadow:0 6px 18px rgba(20,30,60,.12)}
+#sugg div{padding:6px 10px;cursor:pointer;font-size:13px;display:flex;gap:8px}
+#sugg div:hover,#sugg div.hl{background:var(--acc2)}
+.tag{font-size:10.5px;border:1px solid var(--line);border-radius:4px;padding:0 4px;color:var(--muted);white-space:nowrap}
+.mk{color:var(--muted);font-size:11.5px}
+table{width:100%;border-collapse:collapse;font-size:12.8px}
+th{text-align:left;color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;border-bottom:1px solid var(--line);padding:6px 8px;background:#fff}
+td{padding:5px 8px;border-bottom:1px solid #f0f2f6;vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tw{overflow-x:auto}
+.ev{font-weight:650;font-size:11px;padding:1px 6px;border-radius:4px;white-space:nowrap}
+.ENTRY{background:#e2f5ea;color:var(--pos)}.EXIT{background:#fde8e8;color:var(--neg)}.IN{background:#eef1f6;color:var(--muted)}
+.chart{height:380px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+select{font:inherit;font-size:13px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;max-width:100%}
+.bar2{height:6px;background:#9db7f5;border-radius:3px}
+details{color:var(--muted);font-size:12.5px;margin-top:8px}
+summary{cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips a{font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);background:#fff;text-decoration:none}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}header,main{padding-left:10px;padding-right:10px}.warn{margin:0 10px 8px}.chart{height:320px}td,th{padding:4px 5px}}
+</style>
+</head>
+<body>
+<header>
+  <nav class="nav" id="nav"><a href="#stock" data-v="stock">Stock search</a><a href="#fund" data-v="fund">Funds</a><a href="#changes" data-v="changes">Recent changes</a><a href="#managers" data-v="managers">Managers</a><a href="https://ivanovski.github.io/mse-funds/">Net assets site ↗</a></nav>
+  <h1>Macedonian investment funds — TOP-10 holdings</h1>
+  <div class="sub">Топ-10 вложувања на отворените инвестициски фондови · Source: official fund reports published by management companies · <span id="meta"></span></div>
+</header>
+<div class="warn"><b>Caveat:</b> ENTRY/EXIT = a security moved into/out of a fund's <b>published TOP-10 list</b> between two report dates. These are <b>not actual trades</b> — a position can drop out of the top 10 without being sold (or enter without being bought). Data was extracted automatically from official PDF reports and may contain errors; check the linked source PDFs.</div>
+<main id="app"></main>
+<script>/*__ECHARTS__*/</script>
+<script>
+const D=/*__DATA__*/null;
+const $=s=>document.querySelector(s), app=$('#app');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pct=v=>v==null?'–':v.toFixed(2)+'%';
+const TR={'а':'a','б':'b','в':'v','г':'g','д':'d','ѓ':'gj','е':'e','ж':'zh','з':'z','ѕ':'dz','и':'i','ј':'j','к':'k','л':'l','љ':'lj','м':'m','н':'n','њ':'nj','о':'o','п':'p','р':'r','с':'s','т':'t','ќ':'kj','у':'u','ф':'f','х':'h','ц':'c','ч':'ch','џ':'dz','ш':'sh','ђ':'dj','ћ':'c','ы':'y','э':'e','ю':'ju','я':'ja','й':'j','щ':'sh','ь':'','ъ':''};
+const key=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/./g,c=>TR[c]??c).replace(/(zh|sh|ch|kj|gj|dz|lj|nj)/g,m=>m[0]).replace(/[^a-z0-9& ]+/g,' ').replace(/\s+/g,' ').trim();
+const slug=s=>key(s).replace(/ /g,'-');
+D.funds.forEach((f,i)=>{f.i=i;f.slug=slug(f.f);f.mgr=f.m.replace(/\s*\(.*\)/,'');f.dates=f.p.map(x=>x[0]);f.src=Object.fromEntries(f.p)});
+D.secs.forEach((s,i)=>{s.i=i;s.k=[s.n,...s.o].map(key).join(' | ');s.tk=s.t.map(t=>t.toUpperCase());s.rows=[];s.ev=[];s.full=[]});
+const H=D.h.map(r=>({f:r[0],d:r[1],s:r[2],rank:r[3],w:r[4],ty:r[5],o:r[6]}));
+H.forEach(r=>D.secs[r.s].rows.push(r));
+const E=D.e.map(e=>({f:e[0],s:e[1],t:e[2],a:e[3],b:e[4],gap:e[5]}));
+E.forEach(e=>D.secs[e.s].ev.push(e));
+D.full.forEach(r=>D.secs[r[4]].full.push({f:r[0],m:r[1],fn:r[2],d:r[3],w:r[5],u:r[6]}));
+const fundH=D.funds.map(()=>[]);H.forEach(r=>fundH[r.f].push(r));
+const LATEST=D.funds.reduce((a,f)=>f.dates.at(-1)>a?f.dates.at(-1):a,'');
+$('#meta').textContent=`${D.funds.length} funds · ${D.secs.length} securities · reports up to ${LATEST} · built ${D.built}`;
+const secLink=s=>`<a href="#stock=${encodeURIComponent(s.tk[0]||slug(s.n))}">${esc(s.n)}</a>${s.t.length?' <span class="tag">'+esc(s.t.join(', '))+'</span>':''}`;
+const fundLink=f=>`<a href="#fund=${f.slug}">${esc(f.f)}</a>`;
+const evBadge=t=>`<span class="ev ${t}">${t}</span>`;
+const evText=e=>e.t==='IN'?`in TOP-10 at first available report ${e.b}`:e.t==='ENTRY'?`entered TOP-10 between ${e.a} and ${e.b}`:`left TOP-10 between ${e.a} and ${e.b}`;
+const gapNote=e=>e.gap>100?` <span class="mk">(report gap ${e.gap}d)</span>`:'';
+const src=(f,d)=>f.src[d]?`<a href="${esc(f.src[d])}" target="_blank" rel="noopener">PDF</a>`:'';
+let charts=[];function mkChart(el,opt){const c=echarts.init(el);c.setOption(opt);charts.push(c);return c}
+addEventListener('resize',()=>charts.forEach(c=>c.resize()));
+function search(q){const k=key(q),u=q.trim().toUpperCase();if(!k)return[];const out=[];
+ for(const s of D.secs){let sc=0;if(s.tk.includes(u))sc=100;else if(s.tk.some(t=>t.startsWith(u)))sc=80;
+  else{const i=s.k.indexOf(k);if(i>=0)sc=(i==0||s.k[i-1]==' '||s.k[i-1]=='|')?70:50;else if(k.length>=4){const ws=k.split(' ');if(ws.every(w=>s.k.includes(w)))sc=40;else{const f=fz(k,s.k);if(f>=.8)sc=30*f}}}
+  if(sc)out.push([sc+Math.min(s.rows.length,50)/100,s])}
+ return out.sort((a,b)=>b[0]-a[0]).map(x=>x[1])}
+function fz(q,t){let best=0;const ws=t.split(/[ |]+/);for(let i=0;i<ws.length;i++){const w=ws.slice(i,i+q.split(' ').length).join(' ');const d=lev(q,w.slice(0,q.length+1));best=Math.max(best,1-d/Math.max(q.length,1))}return best}
+function lev(a,b){const m=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=m[0];m[0]=i;for(let j=1;j<=b.length;j++){const t=m[j];m[j]=Math.min(m[j]+1,m[j-1]+1,p+(a[i-1]==b[j-1]?0:1));p=t}}return m[b.length]}
+function findSec(v){v=decodeURIComponent(v);const u=v.toUpperCase();return D.secs.find(s=>s.tk.includes(u))||D.secs.find(s=>slug(s.n)===v)||search(v)[0]}
+function findFund(v){v=decodeURIComponent(v);return D.funds.find(f=>f.slug===v)||D.funds[+v]||D.funds.find(f=>key(f.f).includes(key(v)))}
+// ---------- views
+function viewStock(arg){
+ const popular=[...D.secs].filter(s=>s.rows.some(r=>r.ty==='equity')).sort((a,b)=>new Set(b.rows.map(r=>r.f)).size-new Set(a.rows.map(r=>r.f)).size||b.rows.length-a.rows.length).slice(0,24);
+ app.innerHTML=`<div class="card"><h2>Find a stock / security</h2><div class="srch"><input id="q" placeholder="Name or ticker, Cyrillic or Latin — e.g. Алкалоид, Alkaloid, ALK, Komercijalna, Apple" autocomplete="off"><div id="sugg" hidden></div></div>
+ <div class="chips">${popular.map(s=>`<a href="#stock=${encodeURIComponent(s.tk[0]||slug(s.n))}">${esc(s.n.replace(/ AD Skopje$/,''))}</a>`).join('')}</div></div><div id="res"></div>`;
+ const q=$('#q'),sg=$('#sugg');let hl=0,res=[];
+ const draw=()=>{sg.innerHTML=res.slice(0,15).map((s,i)=>`<div data-i="${i}" class="${i==hl?'hl':''}"><span style="flex:1">${esc(s.n)} ${s.t.length?'<span class="tag">'+esc(s.t.join(', '))+'</span>':''}</span><span class="mk">${new Set(s.rows.map(r=>r.f)).size} funds</span></div>`).join('')||'<div class="mk">No match</div>';sg.hidden=false};
+ q.oninput=()=>{res=search(q.value);hl=0;q.value.trim()?draw():sg.hidden=true};
+ q.onkeydown=e=>{if(e.key=='ArrowDown'){hl=Math.min(hl+1,res.length-1);draw();e.preventDefault()}else if(e.key=='ArrowUp'){hl=Math.max(hl-1,0);draw();e.preventDefault()}else if(e.key=='Enter'&&res[hl])go(res[hl])};
+ sg.onclick=e=>{const d=e.target.closest('[data-i]');if(d)go(res[+d.dataset.i])};
+ document.addEventListener('click',e=>{if(!e.target.closest('.srch'))sg.hidden=true},{once:false});
+ function go(s){location.hash='stock='+encodeURIComponent(s.tk[0]||slug(s.n))}
+ if(!arg){q.focus();return}
+ const s=findSec(arg);if(!s){$('#res').innerHTML='<div class="card">No security matches “'+esc(arg)+'”.</div>';return}
+ q.value=s.n;
+ const byF={};s.rows.forEach(r=>(byF[r.f]=byF[r.f]||[]).push(r));
+ const fids=Object.keys(byF).map(Number).sort((a,b)=>D.funds[a].f.localeCompare(D.funds[b].f));
+ const allD=[...new Set(fids.flatMap(f=>D.funds[f].dates))].sort();
+ const cur=fids.filter(f=>byF[f].some(r=>r.d===D.funds[f].dates.at(-1)));
+ let h=`<div class="card"><h2>${esc(s.n)} ${s.t.length?'<span class="tag">'+esc(s.t.join(', '))+'</span>':''} ${s.c.length?'<span class="tag">'+esc(s.c.join(', '))+'</span>':''}</h2>
+ <div class="sub">In the TOP-10 of <b>${fids.length}</b> fund(s) at some point; currently (latest report of each fund) in <b>${cur.length}</b>: ${cur.map(f=>fundLink(D.funds[f])).join(', ')||'none'}.<br>Names as reported: ${esc(s.o.slice(0,8).join(' · '))}${s.o.length>8?' …':''}</div>
+ <div id="sc" class="chart"></div><div class="mk">Weight % of fund net assets at each report date. Gaps = not in the TOP-10 (or no report) on that date.</div></div>
+ <div class="card"><h3>ENTRY / EXIT events</h3><div class="tw"><table><tr><th>Fund</th><th>Event</th><th>Detail</th></tr>${
+  s.ev.slice().sort((a,b)=>b.b.localeCompare(a.b)).map(e=>`<tr><td>${fundLink(D.funds[e.f])}<div class="mk">${esc(D.funds[e.f].mgr)}</div></td><td>${evBadge(e.t)}</td><td>${evText(e)}${gapNote(e)}</td></tr>`).join('')}</table></div></div>
+ <div class="card"><h3>Periods in TOP-10</h3><div class="tw"><table><tr><th>Fund</th><th>Date</th><th class="n">Rank</th><th class="n">Weight</th><th>Type</th><th>Name in report</th><th>Source</th></tr>${
+  fids.flatMap(f=>byF[f].slice().sort((a,b)=>b.d.localeCompare(a.d)).map(r=>`<tr><td>${fundLink(D.funds[f])}</td><td>${r.d}</td><td class="n">${r.rank??''}</td><td class="n">${pct(r.w)}</td><td>${esc(r.ty)}</td><td class="mk">${esc(r.o)}</td><td>${src(D.funds[f],r.d)}</td></tr>`)).join('')}</table></div></div>`;
+ if(s.full.length)h+=`<div class="card"><details><summary><b>Indicative:</b> appearances in full portfolio listings (${s.full.length}) — less reliable, best-effort extraction from semi-annual/annual reports</summary><div class="tw"><table><tr><th>Manager</th><th>Fund</th><th>Date</th><th class="n">Weight</th><th>Source</th></tr>${s.full.slice().sort((a,b)=>b.d.localeCompare(a.d)).map(r=>`<tr><td>${esc(r.m)}</td><td>${esc(r.fn)}</td><td>${r.d}</td><td class="n">${pct(r.w)}</td><td>${r.u?`<a href="${esc(r.u)}" target="_blank" rel="noopener">PDF</a>`:''}</td></tr>`).join('')}</table></div></details></div>`;
+ $('#res').innerHTML=h;
+ mkChart($('#sc'),{tooltip:{trigger:'axis',valueFormatter:v=>v==null?'–':v.toFixed(2)+'%'},legend:{type:'scroll',top:0},grid:{left:44,right:14,top:34,bottom:60},
+  xAxis:{type:'category',data:allD},yAxis:{type:'value',axisLabel:{formatter:'{value}%'}},dataZoom:[{type:'inside'},{type:'slider',height:18,bottom:8}],
+  series:fids.map(f=>{const m={};byF[f].forEach(r=>m[r.d]=(m[r.d]||0)+(r.w||0));const fd=new Set(D.funds[f].dates);
+   return{name:D.funds[f].f,type:'line',connectNulls:false,symbolSize:5,data:allD.map(d=>m[d]!=null?+m[d].toFixed(2):(fd.has(d)?null:'-'))}})});
+}
+function viewFund(arg){
+ const f=arg?findFund(arg):null;
+ const opts=[...new Set(D.funds.map(x=>x.m))].map(m=>`<optgroup label="${esc(m)}">${D.funds.filter(x=>x.m===m).map(x=>`<option value="${x.slug}" ${x===f?'selected':''}>${esc(x.f)} (${x.t})</option>`).join('')}</optgroup>`).join('');
+ app.innerHTML=`<div class="card"><h2>Fund</h2><select id="fs"><option value="">— choose a fund —</option>${opts}</select></div><div id="res"></div>`;
+ $('#fs').onchange=e=>location.hash='fund='+e.target.value;
+ if(!f){$('#res').innerHTML=`<div class="card">${fundTable(D.funds)}</div>`;return}
+ const rs=fundH[f.i],last=f.dates.at(-1),top=rs.filter(r=>r.d===last).sort((a,b)=>(a.rank??99)-(b.rank??99));
+ const evs=E.filter(e=>e.f===f.i&&e.t!=='IN').sort((a,b)=>b.b.localeCompare(a.b));
+ const mx=Math.max(...top.map(r=>r.w||0),1);
+ // heatmap: top securities by appearances
+ const cnt={};rs.forEach(r=>cnt[r.s]=(cnt[r.s]||0)+(r.w||0));
+ const ss=Object.keys(cnt).map(Number).sort((a,b)=>cnt[b]-cnt[a]).slice(0,40);
+ const hm=[];rs.forEach(r=>{const y=ss.indexOf(r.s);if(y>=0)hm.push([f.dates.indexOf(r.d),y,r.w==null?0:+r.w.toFixed(2)])});
+ $('#res').innerHTML=`<div class="grid2"><div class="card"><h2>${esc(f.f)}</h2><div class="sub">${esc(f.m)} · ${esc(f.t)} · ${f.dates.length} reports ${f.dates[0]} … ${last}</div>
+ <h3>Current TOP-10 (${last}) ${src(f,last)}</h3><div class="tw"><table><tr><th class="n">#</th><th>Security</th><th class="n">Weight</th><th style="width:25%"></th></tr>${top.map(r=>`<tr><td class="n">${r.rank??''}</td><td>${secLink(D.secs[r.s])}<div class="mk">${esc(r.o)}</div></td><td class="n">${pct(r.w)}</td><td><div class="bar2" style="width:${(r.w||0)/mx*100}%"></div></td></tr>`).join('')}</table></div></div>
+ <div class="card"><h3>TOP-10 changes (entries/exits)</h3><div class="tw" style="max-height:470px;overflow:auto"><table><tr><th>Between</th><th>Event</th><th>Security</th></tr>${evs.map(e=>`<tr><td>${e.a} → ${e.b}${gapNote(e)}</td><td>${evBadge(e.t)}</td><td>${secLink(D.secs[e.s])}</td></tr>`).join('')||'<tr><td colspan=3 class="mk">none</td></tr>'}</table></div></div></div>
+ <div class="card"><h3>History — weight % by report date (top ${ss.length} securities by cumulative weight)</h3><div id="hm" style="height:${Math.max(300,ss.length*20+110)}px"></div></div>
+ <div class="card"><h3>Source reports</h3><div class="tw"><table><tr><th>Report date</th><th>Source</th></tr>${f.p.slice().reverse().map(([d,u])=>`<tr><td>${d}</td><td>${u?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(decodeURIComponent(u.split('/').pop()))}</a>`:'–'}</td></tr>`).join('')}</table></div></div>`;
+ const hc=mkChart($('#hm'),{tooltip:{formatter:p=>`${esc(D.secs[ss[p.value[1]]].n)}<br>${f.dates[p.value[0]]}: <b>${p.value[2]}%</b>`},grid:{left:190,right:20,top:10,bottom:90},
+  xAxis:{type:'category',data:f.dates,splitArea:{show:true}},yAxis:{type:'category',inverse:true,data:ss.map(s=>D.secs[s].n.length>28?D.secs[s].n.slice(0,27)+'…':D.secs[s].n)},
+  visualMap:{min:0,max:Math.ceil(Math.max(...hm.map(x=>x[2]),1)),calculable:true,orient:'horizontal',left:'center',bottom:0,itemHeight:120,inRange:{color:['#e8efff','#2563eb','#0b2a75']}},
+  dataZoom:[{type:'slider',xAxisIndex:0,height:16,bottom:44}],series:[{type:'heatmap',data:hm,label:{show:false}}]});
+ hc.on('click',p=>location.hash='stock='+encodeURIComponent(D.secs[ss[p.value[1]]].tk[0]||slug(D.secs[ss[p.value[1]]].n)));
+}
+function fundTable(fs){return `<div class="tw"><table><tr><th>Manager</th><th>Fund</th><th>Type</th><th class="n">Reports</th><th>First</th><th>Latest</th></tr>${fs.map(f=>`<tr><td>${esc(f.mgr)}</td><td>${fundLink(f)}</td><td>${esc(f.t)}</td><td class="n">${f.dates.length}</td><td>${f.dates[0]}</td><td>${f.dates.at(-1)}</td></tr>`).join('')}</table></div>`}
+function viewChanges(arg){
+ const ds=[...new Set(E.filter(e=>e.t!=='IN').map(e=>e.b))].sort().reverse();const d=arg&&ds.includes(arg)?arg:ds[0];
+ const ev=E.filter(e=>e.b===d&&e.t!=='IN').sort((a,b)=>D.funds[a.f].f.localeCompare(D.funds[b.f].f)||a.t.localeCompare(b.t));
+ const w=e=>{const r=H.find(r=>r.f===e.f&&r.s===e.s&&r.d===(e.t==='ENTRY'?e.b:e.a));return r?pct(r.w):''};
+ const byS={};ev.forEach(e=>{(byS[e.s]=byS[e.s]||{ENTRY:0,EXIT:0})[e.t]++});
+ const multi=Object.entries(byS).filter(([s,c])=>c.ENTRY+c.EXIT>1).sort((a,b)=>(b[1].ENTRY+b[1].EXIT)-(a[1].ENTRY+a[1].EXIT));
+ app.innerHTML=`<div class="card"><h2>TOP-10 changes for report date <select id="ds">${ds.map(x=>`<option ${x===d?'selected':''}>${x}</option>`).join('')}</select></h2>
+ <div class="sub">${ev.filter(e=>e.t=='ENTRY').length} entries, ${ev.filter(e=>e.t=='EXIT').length} exits across ${new Set(ev.map(e=>e.f)).size} funds. Compared to each fund's previous report.</div>
+ ${multi.length?`<h3>Securities moving in several funds</h3><div class="chips">${multi.map(([s,c])=>`<a href="#stock=${encodeURIComponent(D.secs[s].tk[0]||slug(D.secs[s].n))}">${esc(D.secs[s].n)} · ${c.ENTRY?'+'+c.ENTRY:''}${c.EXIT?' −'+c.EXIT:''}</a>`).join('')}</div>`:''}</div>
+ <div class="card"><div class="tw"><table><tr><th>Fund</th><th>Event</th><th>Security</th><th class="n">Weight*</th><th>Previous report</th><th>Source</th></tr>${ev.map(e=>{const f=D.funds[e.f];return`<tr><td>${fundLink(f)}<div class="mk">${esc(f.mgr)}</div></td><td>${evBadge(e.t)}</td><td>${secLink(D.secs[e.s])}</td><td class="n">${w(e)}</td><td>${e.a}${gapNote(e)}</td><td>${src(f,e.b)}</td></tr>`}).join('')}</table></div><div class="mk">* Weight at entry date (ENTRY) or at the last report where it was still in the TOP-10 (EXIT).</div></div>`;
+ $('#ds').onchange=e=>location.hash='changes='+e.target.value;
+}
+function viewManagers(){
+ const ms=[...new Set(D.funds.map(f=>f.m))];
+ app.innerHTML=ms.map(m=>{const fs=D.funds.filter(f=>f.m===m);const fi=new Set(fs.map(f=>f.i));
+  const cur={};fs.forEach(f=>fundH[f.i].filter(r=>r.d===f.dates.at(-1)).forEach(r=>{cur[r.s]=(cur[r.s]||0)+1}));
+  const common=Object.entries(cur).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  return `<div class="card"><h2>${esc(m)}</h2><div class="sub">${fs.length} funds · ${H.filter(r=>fi.has(r.f)).length} TOP-10 rows · ${E.filter(e=>fi.has(e.f)&&e.t!=='IN').length} entry/exit events</div>${fundTable(fs)}
+  <h3>Most common holdings in current TOP-10s</h3><div class="chips">${common.map(([s,c])=>`<a href="#stock=${encodeURIComponent(D.secs[s].tk[0]||slug(D.secs[s].n))}">${esc(D.secs[s].n)}${c>1?' ×'+c:''}</a>`).join('')}</div></div>`}).join('')+
+  `<div class="card mk">Data: TOP-10 holdings tables from quarterly/semi-annual official fund reports (PDFs linked per report). Full-portfolio listings are shown only as <i>indicative</i> on stock pages. Entry/exit = movement in/out of the published TOP-10 list, not trades.</div>`;
+}
+function route(){charts.forEach(c=>c.dispose());charts=[];
+ const h=decodeURIComponent(location.hash.slice(1));const [v,...rest]=h.split('=');const a=rest.join('=');const view=['stock','fund','changes','managers'].includes(v)?v:'stock';
+ document.querySelectorAll('#nav a[data-v]').forEach(x=>x.classList.toggle('on',x.dataset.v===view));
+ ({stock:viewStock,fund:viewFund,changes:viewChanges,managers:viewManagers})[view](a);scrollTo(0,0)}
+addEventListener('hashchange',route);route();
+</script>
+</body>
+</html>
